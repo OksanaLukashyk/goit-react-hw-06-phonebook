@@ -1,19 +1,16 @@
 import { useState } from 'react';
 import { nanoid } from 'nanoid';
-import css from './ContactForm.module.css';
 import { Notify } from 'notiflix';
 import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/contacts/contactsSlice';
+import css from './ContactForm.module.css';
 
-export const ContactForm = ({ onSubmit }) => {
+export const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
   const contacts = useSelector(state => state.contactsStore.contacts);
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   localStorage.setItem('contacts', JSON.stringify(contacts));
-  // }, [contacts]);
 
   const addContactData = contactData => {
     const hasDuplicates = contacts.some(
@@ -30,12 +27,7 @@ export const ContactForm = ({ onSubmit }) => {
       return;
     }
 
-    const addContactsAction = {
-      type: 'contacts/addContact',
-      payload: contactData,
-    };
-
-    dispatch(addContactsAction);
+    dispatch(addContact(contactData));
   };
 
   const handleSubmit = evt => {

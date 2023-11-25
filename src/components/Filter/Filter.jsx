@@ -1,7 +1,5 @@
-import css from './Filter.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-
-// Для фільтра було б добре створити окремий slice (не обов'язково, але так структура буде ще чистіша)
+import css from './Filter.module.css';
 
 export const Filter = () => {
   const dispatch = useDispatch();

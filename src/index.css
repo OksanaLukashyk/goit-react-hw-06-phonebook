@@ -73,3 +73,24 @@ img {
   background: inherit;
   backdrop-filter: blur(50px);
 }
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: seashell;
+  /* Колір полоси скролбару */
+  border-radius: 10px;
+  /* Радіус кутів */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #707070;
+}
