@@ -6,12 +6,7 @@ export const Filter = () => {
   const filter = useSelector(state => state.filterStore.filter);
 
   const filterChange = evt => {
-    const addSetFilterAction = {
-      type: 'filter/setFilter',
-      payload: evt.target.value,
-    };
-
-    dispatch(addSetFilterAction);
+dispatch(setFilter(evt.target.value));
   };
 
   return (
