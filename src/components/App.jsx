@@ -3,36 +3,47 @@ import { Notify } from 'notiflix';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
+import { useDispatch, useSelector } from 'react-redux';
+
+// Використовуємо саме Redux Toolkit
+// Використати всі можливості redux, в Арр лише рендеримо компоненти, вся логіка роботи з контактими переміщається в компоненти
+// Для фільтра було б добре створити окремий slice (не обов'язково, але так структура буде ще чистіша)
 
 export const App = () => {
-  const contactsDataBase = [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ];
+  const contacts = useSelector(state => state.contactsStore.contacts);
+  const dispatch = useDispatch();
+  // const getInitialContactsList = () => {
+  //   return JSON.parse(localStorage.getItem('contacts')) ?? contactsDataBase;
+  // };
 
-  const getInitialContactsList = () => {
-    return JSON.parse(localStorage.getItem('contacts')) ?? contactsDataBase;
-  };
+  // const [contacts, setContacts] = useState(getInitialContactsList);
+  const [filter, setFilter] = useState('');
 
-  const [contacts, setContacts] = useState(getInitialContactsList);
-  const [filter, setFilter] = useState("");
-  
   useEffect(() => {
-      localStorage.setItem('contacts', JSON.stringify(contacts));
-   }, [contacts]);
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   const addContactData = contactData => {
     const hasDuplicates = contacts.some(
-      contact => contact.name.toLowerCase().trim() === contactData.name.toLowerCase().trim());
+      contact =>
+        contact.name.toLowerCase().trim() ===
+        contactData.name.toLowerCase().trim()
+    );
 
     if (hasDuplicates) {
-      Notify.warning(`Contact with name '${contactData.name}' has already been added!`, { timeout: 6000, });
+      Notify.warning(
+        `Contact with name '${contactData.name}' has already been added!`,
+        { timeout: 6000 }
+      );
       return;
     }
 
-    setContacts(prevState => [...prevState, {...contactData}]);  
+    const addContactsAction = {
+      type: 'contacts/addContact',
+      payload: contactData,
+    };
+
+    dispatch(addContactsAction);
   };
 
   const filterChange = evt => {
@@ -40,18 +51,22 @@ export const App = () => {
   };
 
   const filterContacts = () => {
-    if (!filter) { 
+    if (!filter) {
       return contacts;
     }
-    
-    return contacts.filter(contact => contact.name.toLowerCase().trim().includes(filter.toLowerCase().trim()));
-  }
-  
+
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().trim().includes(filter.toLowerCase().trim())
+    );
+  };
+
   const deleteContacts = id => {
-    setContacts(prevState => {
-      return prevState.filter(
-        contact => contact.id !== id);
-    });
+    const deleteProductAction = {
+      type: 'contacts/deleteContact',
+      payload: id,
+    };
+
+    dispatch(deleteProductAction);
   };
 
   return (
@@ -60,7 +75,10 @@ export const App = () => {
       <ContactForm onSubmit={addContactData} />
       <h2>Contacts</h2>
       <Filter filterValue={filter} handleFilterInputChange={filterChange} />
-      <ContactList filteredContacts={filterContacts()} handleDeleteContact={deleteContacts} /> 
+      <ContactList
+        filteredContacts={filterContacts()}
+        handleDeleteContact={deleteContacts}
+      />
     </div>
-  )
+  );
 };
