@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import {setFilter} from 'redux/filter/filterSlice'';
+import { setFilter } from 'redux/filter/filterSlice';
 import css from './Filter.module.css';
 
 export const Filter = () => {
@@ -7,7 +7,7 @@ export const Filter = () => {
   const filter = useSelector(state => state.filterStore.filter);
 
   const filterChange = evt => {
-dispatch(setFilter(evt.target.value));
+    dispatch(setFilter(evt.target.value));
   };
 
   return (
