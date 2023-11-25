@@ -1,12 +1,42 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
 import css from './ContactForm.module.css';
-
-//   Перевірку, чи існує вже контакт з введеними даними потрібно робити під час сабміту форми, не у редюсерах.
+import { Notify } from 'notiflix';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const ContactForm = ({ onSubmit }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
+  const contacts = useSelector(state => state.contactsStore.contacts);
+  const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   localStorage.setItem('contacts', JSON.stringify(contacts));
+  // }, [contacts]);
+
+  const addContactData = contactData => {
+    const hasDuplicates = contacts.some(
+      contact =>
+        contact.name.toLowerCase().trim() ===
+        contactData.name.toLowerCase().trim()
+    );
+
+    if (hasDuplicates) {
+      Notify.warning(
+        `Contact with name '${contactData.name}' has already been added!`,
+        { timeout: 6000 }
+      );
+      return;
+    }
+
+    const addContactsAction = {
+      type: 'contacts/addContact',
+      payload: contactData,
+    };
+
+    dispatch(addContactsAction);
+  };
 
   const handleSubmit = evt => {
     evt.preventDefault();
@@ -17,9 +47,10 @@ export const ContactForm = ({ onSubmit }) => {
       id: nanoid(),
     };
 
-    onSubmit(contactData);
+    addContactData(contactData);
     setName('');
     setNumber('');
+    evt.target.reset();
   };
 
   const handleInputChange = evt => {

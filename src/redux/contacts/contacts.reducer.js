@@ -18,7 +18,9 @@ const contactsDataBase = [
 ];
 
 const initialState = {
-  contacts: JSON.parse(localStorage.getItem('contacts')) ?? contactsDataBase,
+  //   contacts: JSON.parse(localStorage.getItem('contacts')) ?? contaccontacts:tsDataBase,
+  //   contacts: [],
+  contacts: contactsDataBase,
 }; // [{}, {}, {},...
 
 export const contactsReducer = (state = initialState, action) => {
@@ -36,6 +38,23 @@ export const contactsReducer = (state = initialState, action) => {
         contacts: state.contacts.filter(
           contact => contact.id !== action.payload //action.payload will have contact id
         ),
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+const initialFilterState = {
+  filter: '',
+};
+
+export const filterReducer = (state = initialFilterState, action) => {
+  switch (action.type) {
+    case 'filter/setFilter': {
+      return {
+        ...state,
+        filter: action.payload,
       };
     }
     default:
